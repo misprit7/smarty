@@ -1,0 +1,2 @@
+net.o: src/net.cpp
+main.o: test/main.cpp
