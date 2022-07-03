@@ -14,6 +14,9 @@ class Net
         // List of matrices of weights
         std::vector<Matrix> weights;
 
+        // Activation function
+        float (*act)(float);
+
         Net(std::vector<int> layer_sizes);
 
         // Runs the neural network

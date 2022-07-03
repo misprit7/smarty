@@ -1,6 +1,7 @@
 #include "matrix.h"
-#include "iostream"
+#include <iostream>
 #include <cassert>
+#include <vector>
 
 Matrix::Matrix(int r, int c){
     rows = r;
@@ -11,8 +12,13 @@ Matrix::Matrix(int r, int c){
     }
 }
 
-Matrix::Matrix(int r){
-    Matrix(r, 1);
+Matrix::Matrix(int r) : Matrix(r, 1) {}
+
+Matrix::~Matrix(){
+    /* for(int i = 0; i < rows; ++i){ */
+    /*     free(entries[i]); */
+    /* } */
+    /* free(entries); */
 }
 
 void Matrix::set_val(float v){
@@ -21,7 +27,23 @@ void Matrix::set_val(float v){
             entries[r][c] = v;
         }
     }
-};
+}
+
+void Matrix::set_vec(std::vector<std::vector<float> > vec){
+    for(int r = 0; r < rows; ++r){
+        for(int c = 0; c < cols; ++c){
+            entries[r][c] = vec[r][c];
+        }
+    }
+}
+
+void Matrix::apply(float (*fun)(float)){
+    for(int r = 0; r < rows; ++r){
+        for(int c = 0; c < cols; ++c){
+            entries[r][c] = fun(entries[r][c]);
+        }
+    }
+}
 
 void Matrix::print(){
     for(int r = 0; r < rows; ++r){
