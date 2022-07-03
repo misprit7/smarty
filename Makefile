@@ -6,13 +6,19 @@ LDFLAGS=-g
 LDLIBS=
 
 BUILD_DIR=build
-SRCS=src/net.cpp test/main.cpp
+SRCS=src/net.cpp \
+src/matrix.cpp \
+test/main.cpp
+
+INC=-Isrc/net.h \
+-Isrc/matrix.h
+
 OBJS=$(subst .cpp,.o,$(SRCS))
 
 all: $(BUILD_DIR)/main
 
 $(BUILD_DIR)/main: $(BUILD_DIR) $(OBJS)
-	$(CXX) $(LDFLAGS) -o $(BUILD_DIR)/main $(OBJS) $(LDLIBS)
+	$(CXX) $(LDFLAGS) -o $(BUILD_DIR)/main $(INC) $(OBJS) $(LDLIBS)
 
 depend: .depend
 
