@@ -1,3 +1,3 @@
-net.o: src/net.cpp src/net.h
+net.o: src/net.cpp src/net.h src/matrix.h
 matrix.o: src/matrix.cpp src/matrix.h
-main.o: test/main.cpp test/../src/net.h
+main.o: test/main.cpp test/../src/net.h test/../src/matrix.h

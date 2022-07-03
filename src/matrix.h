@@ -6,10 +6,13 @@
 class Matrix {
     public: 
 
-        unsigned int rows, cols;
+         int rows, cols;
         float **entries;
 
-        Matrix(unsigned int r, unsigned int c);
+        Matrix( int r,  int c);
+
+        void set_val(float v);
+        void print();
 };
 
 #endif
