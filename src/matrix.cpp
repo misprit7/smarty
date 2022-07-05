@@ -3,6 +3,8 @@
 #include <cassert>
 #include <vector>
 
+
+
 Matrix::Matrix(){
     rows = 0;
     cols = 0;
@@ -23,6 +25,9 @@ Matrix::Matrix(int r) : Matrix(r, 1) {}
 // gives a run time error
 // Probably something to do with the way that c++ handles class lifespan that
 // I don't understand
+//
+// I suspect this could cause a memory leak at some point but have yet to see
+// any evidence of this
 Matrix::~Matrix(){
     /* for(int i = 0; i < rows; ++i){ */
     /*     free(entries[i]); */
@@ -85,7 +90,6 @@ void Matrix::print(){
     }
 }
 
-
 // Relatively bad O(n^3) implementation for now
 Matrix Matrix::operator*(const Matrix& mat){
     assert(cols == mat.rows);
@@ -102,6 +106,17 @@ Matrix Matrix::operator*(const Matrix& mat){
     return ret;
 }
 
+Matrix Matrix::operator*(float x){
+    Matrix ret(rows, cols);
+    for(int r = 0; r < ret.rows; ++r){
+        for(int c = 0; c < ret.cols; ++c){
+            ret[r][c] = entries[r][c] * x; 
+        }
+    }
+    return ret;
+}
+
+// Might be a way to generalize % and + operators to avoid duplicated code
 Matrix Matrix::operator%(const Matrix& mat){
     assert(cols == mat.cols);
     assert(rows == mat.rows);
@@ -115,6 +130,31 @@ Matrix Matrix::operator%(const Matrix& mat){
     return ret;
 }
 
+Matrix Matrix::operator+(const Matrix& mat){
+    assert(cols == mat.cols);
+    assert(rows == mat.rows);
+    Matrix ret(rows, cols);
+
+    for(int r = 0; r < ret.rows; ++r){
+        for(int c = 0; c < ret.cols; ++c){
+            ret[r][c] = entries[r][c] + mat[r][c];
+        }
+    }
+    return ret;
+}
+
+bool Matrix::operator==(const Matrix& mat){
+    assert(cols == mat.cols);
+    assert(rows == mat.rows);
+
+    for(int r = 0; r < rows; ++r){
+        for(int c = 0; c < cols; ++c){
+            if(entries[r][c] != mat[r][c])
+                return false;
+        }
+    }
+    return true;
+}
 
 float* Matrix::operator[](std::size_t i){
     return entries[i];

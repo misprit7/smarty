@@ -5,6 +5,10 @@
 #include <vector>
 
 // Maybe template in future? 
+//
+// TODO: Add support for more efficient column vectors and transposes instead
+// of the current Nx1 vectors and deep copy transposes which have unnecessary
+// memory footprints
 class Matrix {
     private:
         float **entries;
@@ -38,8 +42,17 @@ class Matrix {
 
         // * operator is matrix multiplication
         Matrix operator*(const Matrix& mat);
+        // * operator is also scalar multiplication
+        Matrix operator*(float x);
         // % operator is Hammard product
         Matrix operator%(const Matrix& mat);
+        // + operator is elementwise addition
+        Matrix operator+(const Matrix& mat);
+        // TODO: Implement subtraction as negative of addition
+        // == is actual matrix equality
+        // To even compare the matrices should be the same cols/rows
+        // i.e. assertion fail if they don't
+        bool operator==(const Matrix& mat);
 
         // Array subscripting
         float* operator[](std::size_t i);

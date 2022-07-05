@@ -6,12 +6,15 @@
 
 class Net 
 { 
+    // I'm being pretty loose with private vs. public for now since it makes 
+    // debugging a lot easier
     public: 
         // Number of layers, including input and output, should be >=2
         unsigned int num_layers;
         // List of layer lengths
         std::vector<int> layer_len;
         // List of matrices of weights
+        // Should have length num_layers-1
         std::vector<Matrix> weights;
 
         // Activation function
@@ -34,7 +37,9 @@ class Net
         // Output is layer_len[-1] * 1 matrix
         Matrix run(Matrix &input);
 
-        void backpropogate(Matrix &input, Matrix &output);
+        // Updates weight from input matrices
+        // lr: learning rate
+        void backpropogate(Matrix &input, Matrix &output, float lr);
 };
 
 #endif

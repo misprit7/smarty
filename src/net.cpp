@@ -70,7 +70,8 @@ Matrix Net::run(Matrix &input){
 // https://en.wikipedia.org/wiki/Backpropagation
 //
 // Variable conventions follow that, so reference wikipedia for definitions
-void Net::backpropogate(Matrix &input, Matrix &output){
+// Maybe want to split this up into separate functions at some point
+void Net::backpropogate(Matrix &input, Matrix &output, float lr){
     std::vector<Matrix> a;
     std::vector<Matrix> f_prime;
     
@@ -88,15 +89,25 @@ void Net::backpropogate(Matrix &input, Matrix &output){
     Matrix grad_a_C = cost_d(a.back(), output);
 
     // Calculate deltas + gradients
-    std::vector<Matrix> delta(num_layers);
-    // index zero is never used, but nicer for indexing this way
-    std::vector<Matrix> grad_w_C(num_layers);
+    // index = l-1
+    std::vector<Matrix> delta(num_layers-1);
+    std::vector<Matrix> grad_w_C(num_layers-1);
 
     // Hammard product
     delta.back() = f_prime.back() % grad_a_C;
-    for(int l = num_layers-1; l > 0; --l){
-        grad_w_C[l] = delta[l] * a[l-1].transpose();
-        delta[l-1] = f_prime[l-1] % (weights[l-1].transpose() * delta[l]);
+    grad_w_C.back() = delta.back() * a[num_layers-2].transpose();
+    // This is quite confusing since wikipedia is 1 indexed and c++ is 0
+    // indexed
+    for(int l = num_layers-2; l > 0; --l){
+        delta[l-1] = f_prime[l-1] % (weights[l].transpose() * delta[l]);
+        // This looks different than wikipedia because grad_w_C and delta
+        // have one less element than a
+        grad_w_C[l-1] = delta[l-1] * a[l-1].transpose();
+    }
+
+    // Update weights using gradient descent
+    for(i = 0; i < weights.size(); ++i){
+        weights[i] = weights[i] + grad_w_C[i] * (-lr);
     }
 
 }
