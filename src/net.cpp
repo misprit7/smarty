@@ -11,6 +11,14 @@ static float relu_d(float x){
     return x < 0 ? 0 : 1;
 }
 
+static float linear(float x){
+    return x;
+}
+
+static float linear_d(float x){
+    return 1;
+}
+
 static float sum_of_squares(Matrix &y1, Matrix &y2){
     assert(y1.rows == y2.rows && y1.cols == y2.cols);
     assert(y1.cols == 1);

@@ -17,12 +17,13 @@ class Matrix {
 
         int rows, cols;
 
-        Matrix();
+        Matrix(void);
 
         // r: rows, c: cols
         Matrix(int r,  int c);
         // r: rows, c: 1
         Matrix(int r);
+        Matrix(std::vector<std::vector<float> > vec);
 
         // frees dynamically allocated entries
         ~Matrix();

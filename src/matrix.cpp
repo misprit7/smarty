@@ -2,8 +2,9 @@
 #include <iostream>
 #include <cassert>
 #include <vector>
+#include <cmath>
 
-
+#define EPSILON 0.001
 
 Matrix::Matrix(){
     rows = 0;
@@ -15,11 +16,15 @@ Matrix::Matrix(int r, int c){
     cols = c;
     entries = (float**) malloc(rows * sizeof(float*));
     for(int i = 0; i < rows; ++i){
-        entries[i] = (float*) malloc(cols * sizeof(float));
+        entries[i] = (float*) std::calloc(cols, sizeof(float));
     }
 }
 
 Matrix::Matrix(int r) : Matrix(r, 1) {}
+
+Matrix::Matrix(std::vector<std::vector<float> > vec) : Matrix(vec.size(), vec[0].size()) {
+    set_vec(vec);
+}
 
 // TODO: Figure out why this isn't necessay and in fact actually and actually
 // gives a run time error
@@ -149,7 +154,10 @@ bool Matrix::operator==(const Matrix& mat){
 
     for(int r = 0; r < rows; ++r){
         for(int c = 0; c < cols; ++c){
-            if(entries[r][c] != mat[r][c])
+            if(std::isnan(entries[r][c]) || std::isnan(mat[r][c]))
+                return false;
+            // Might want to change this to relative error
+            if(std::abs(entries[r][c] - mat[r][c]) > EPSILON)
                 return false;
         }
     }
