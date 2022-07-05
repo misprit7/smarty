@@ -3,6 +3,11 @@
 #include <cassert>
 #include <vector>
 
+Matrix::Matrix(){
+    rows = 0;
+    cols = 0;
+}
+
 Matrix::Matrix(int r, int c){
     rows = r;
     cols = c;
@@ -14,6 +19,10 @@ Matrix::Matrix(int r, int c){
 
 Matrix::Matrix(int r) : Matrix(r, 1) {}
 
+// TODO: Figure out why this isn't necessay and in fact actually and actually
+// gives a run time error
+// Probably something to do with the way that c++ handles class lifespan that
+// I don't understand
 Matrix::~Matrix(){
     /* for(int i = 0; i < rows; ++i){ */
     /*     free(entries[i]); */
@@ -37,7 +46,7 @@ void Matrix::set_vec(std::vector<std::vector<float> > vec){
     }
 }
 
-void Matrix::apply(float (*fun)(float)){
+void Matrix::apply_inplace(float (*fun)(float)){
     for(int r = 0; r < rows; ++r){
         for(int c = 0; c < cols; ++c){
             entries[r][c] = fun(entries[r][c]);
@@ -45,6 +54,28 @@ void Matrix::apply(float (*fun)(float)){
     }
 }
 
+Matrix Matrix::apply(float (*fun)(float)){
+    Matrix ret(rows, cols);
+    for(int r = 0; r < rows; ++r){
+        for(int c = 0; c < cols; ++c){
+            ret[r][c] = fun(entries[r][c]);
+        }
+    }
+    return ret;
+}
+
+Matrix Matrix::transpose(){
+    Matrix ret(cols, rows);
+    for(int r = 0; r < rows; ++r){
+        for(int c = 0; c < cols; ++c){
+            ret[c][r] = entries[r][c];
+        }
+    }
+    return ret;
+}
+
+// TODO: Make this print each character constant width instead to aid ease of
+// reading
 void Matrix::print(){
     for(int r = 0; r < rows; ++r){
         for(int c = 0; c < cols; ++c){
@@ -69,5 +100,27 @@ Matrix Matrix::operator*(const Matrix& mat){
         }
     }
     return ret;
+}
+
+Matrix Matrix::operator%(const Matrix& mat){
+    assert(cols == mat.cols);
+    assert(rows == mat.rows);
+    Matrix ret(rows, cols);
+
+    for(int r = 0; r < ret.rows; ++r){
+        for(int c = 0; c < ret.cols; ++c){
+            ret[r][c] = entries[r][c] * mat[r][c];
+        }
+    }
+    return ret;
+}
+
+
+float* Matrix::operator[](std::size_t i){
+    return entries[i];
+}
+
+const float* Matrix::operator[](std::size_t i) const {
+    return entries[i];
 }
 

@@ -16,13 +16,25 @@ class Net
 
         // Activation function
         float (*act)(float);
+        // Cost function
+        float (*cost)(Matrix &y1, Matrix &y2);
+
+        // Derivatives for input functions
+        // These could have been computed numerically but might as well
+        // compute directly if it's easy
+        // Activation function
+        float (*act_d)(float);
+        // Cost function
+        Matrix (*cost_d)(Matrix &y1, Matrix &y2);
 
         Net(std::vector<int> layer_sizes);
 
         // Runs the neural network
         // Matrix must be a layer_len[0] * 1 matrix
         // Output is layer_len[-1] * 1 matrix
-        Matrix run(Matrix input);
+        Matrix run(Matrix &input);
+
+        void backpropogate(Matrix &input, Matrix &output);
 };
 
 #endif

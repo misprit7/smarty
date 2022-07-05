@@ -1,3 +1,4 @@
+#include <iostream>
 #include <stdio.h>
 #include <string.h>
 #include <vector>
@@ -21,14 +22,24 @@ void testNetRun(){
     net.weights[0].set_vec(weights0);
     net.weights[1].set_vec(weights1);
 
+    std::cout << "Weight[0]:";
     net.weights[0].print();
+    std::cout << "Weight[1]:";
     net.weights[1].print();
 
     Matrix input(2);
-    input.entries[0][0] = 1;
-    input.entries[1][0] = 1;
+    input[0][0] = 1;
+    input[1][0] = 1;
 
-    net.run(input).print();
+    std::cout << "Run output:";
+    Matrix output_run = net.run(input);
+    output_run.print();
+
+    std::cout << "Backpropogation";
+    Matrix output(2);
+    output[0][0] = 0.3;
+    output[1][0] = 2;
+    net.backpropogate(input, output);
 
 }
 
@@ -37,8 +48,8 @@ void testMatMul(){
     Matrix mat2(3, 2);
     for(int i = 0; i < 2; ++i){
         for(int j = 0; j < 3; ++j){
-            mat1.entries[i][j] = i+j*2;
-            mat2.entries[j][i] = i+j*2;
+            mat1[i][j] = i+j*2;
+            mat2[j][i] = i+j*2;
         }
     }
     mat1.print();
