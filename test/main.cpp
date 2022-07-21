@@ -18,7 +18,7 @@ int main(void){
     testNetRun();
     testIdentity();
     // Doesn't currently work
-    /* testTransitionMatrix(); */
+    testTransitionMatrix();
 }
 
 void testMatMul(){
@@ -114,32 +114,32 @@ void testIdentity(){
 
 // Test using state transition matrix
 void testTransitionMatrix(){
-    std::vector<int> layer_len = {100, 50, 20, 2};
+    std::vector<int> layer_len = {3, 3, 2};
     Net net(layer_len);
 
-    /* Matrix M = Matrix((V){{10, 14, 7}, {11, 13, 6}}); */
-    Matrix M = Matrix(layer_len.back(), layer_len[0]);
-    for(int r = 0; r < M.rows; ++r){
-        for(int c = 0; c < M.cols; ++c){
-            M[r][c] = (r+c)%10;
-        }
-    }
+    Matrix M = Matrix((V){{2, 1, -1}, {1, -1, 0}});
+    /* Matrix M = Matrix(layer_len.back(), layer_len[0]); */
+    /* for(int r = 0; r < M.rows; ++r){ */
+    /*     for(int c = 0; c < M.cols; ++c){ */
+    /*         M[r][c] = (r+c)%10; */
+    /*     } */
+    /* } */
 
     std::vector<Matrix> inputs;
     std::vector<Matrix> outputs;
     for(int i = 0; i < 100; ++i){
         Matrix input(layer_len[0]);
-        int index = rand()%layer_len[0];
         for(int j = 0; j < layer_len[0]; ++j){
-            input[j][0] = j == index ? 1 : 0;
+            input[j][0] = (rand()%(2*layer_len[0]))-layer_len[0];
         }
         inputs.push_back(input);
         outputs.push_back(M * input);
     }
 
-    float lr = 0.00001;
-    for(int i = 0; i < inputs.size(); ++i){
-        net.backpropogate(inputs[i], outputs[i], lr);
+    float lr = 0.001;
+    for(int i = 0; i < inputs.size() * 100; ++i){
+        int index = i % inputs.size();
+        net.backpropogate(inputs[index], outputs[index], lr);
         lr = lr/(1+0.1*i);
     }
     /* std::cout << "input 0:\n"; */

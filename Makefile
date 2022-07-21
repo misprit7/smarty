@@ -1,11 +1,11 @@
-CC=gcc
-CXX=g++
+CC=gcc-11
+CXX=g++-11
 RM=rm -f
 CPPFLAGS=-g -std=c++11
 LDFLAGS=-g
 LDLIBS=
 
-BUILD_DIR=build
+BUILD_DIR=.
 SRCS=src/net.cpp \
 src/matrix.cpp \
 test/main.cpp
