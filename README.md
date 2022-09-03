@@ -7,7 +7,7 @@
   A feedforward neural network implementation built completely from scratch
 </p>
 
-This is a personal project to write a neural network implementation with backpropogation learning in c++ completely from scratch, without the help of any guides, tutorials or external libraries (even linear algebra ones). The only reference used to write this project was was Wikipedia, mostly [this page](https://en.wikipedia.org/wiki/Backpropagation). 
+This is a personal project to write a neural network implementation with backpropogation learning in C++ completely from scratch, without the help of any guides, tutorials or external libraries (even linear algebra ones). The only reference used to write this project was was Wikipedia, mostly [this page](https://en.wikipedia.org/wiki/Backpropagation). 
 
 Currently the network works for feeding forward, i.e. if you assign a network with a given set of weights/hidden layers, it can calculate the output of the network for any given input. Backpropogation based gradient descent learning is also implemented, but has some issues and doesn't quite work. 
 
