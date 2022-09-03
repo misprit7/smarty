@@ -3,7 +3,7 @@
 #include <string.h>
 #include <vector>
 #include <cassert>
-#include "../src/net.h"
+#include "../src/net.hpp"
 #include <random>
 
 typedef std::vector<std::vector<float> > V;
@@ -84,9 +84,6 @@ void testIdentity(){
     std::vector<int> layer_len = {2, 2};
     Net net(layer_len);
 
-    auto out_fun = [](Matrix &in) -> Matrix& {
-        return in;
-    };
 
     std::vector<Matrix> inputs;
     for(int i = 0; i < 1000; ++i){
@@ -96,8 +93,8 @@ void testIdentity(){
     }
 
     float lr = 1;
-    for(int i = 0; i < inputs.size(); ++i){
-        net.backpropogate(inputs[i], out_fun(inputs[i]), lr);
+    for(int i = 0; i < 10; ++i){
+        net.backpropogate(inputs, inputs, lr);
         lr = lr/(1+0.1*i);
     }
 
@@ -136,18 +133,17 @@ void testTransitionMatrix(){
         outputs.push_back(M * input);
     }
 
-    float lr = 0.001;
-    for(int i = 0; i < inputs.size() * 100; ++i){
-        int index = i % inputs.size();
-        net.backpropogate(inputs[index], outputs[index], lr);
+    float lr = 0.01;
+    for(int i = 0; i < 10; ++i){
+        net.backpropogate(inputs, outputs, lr);
         lr = lr/(1+0.1*i);
     }
-    /* std::cout << "input 0:\n"; */
-    /* inputs[0].print(); */
-    /* std::cout << "expected:\n"; */
-    /* outputs[0].print(); */
-    /* std::cout << "output:\n"; */
-    /* net.run(inputs[0]).print(); */
+    std::cout << "input 0:\n";
+    inputs[0].print();
+    std::cout << "expected:\n";
+    outputs[0].print();
+    std::cout << "output:\n";
+    net.run(inputs[0]).print();
 }
 
 

@@ -2,7 +2,7 @@
 #define NET_H
 
 #include <vector>
-#include "matrix.h"
+#include "matrix.hpp"
 
 class Net 
 { 
@@ -37,9 +37,11 @@ class Net
         // Output is layer_len[-1] * 1 matrix
         Matrix run(Matrix &input);
 
+        std::vector<Matrix> Gradient(Matrix &input, Matrix &output);
+
         // Updates weight from input matrices
         // lr: learning rate
-        void backpropogate(Matrix &input, Matrix &output, float lr);
+        void backpropogate(std::vector<Matrix>& input, std::vector<Matrix>& output, float lr);
 };
 
 #endif

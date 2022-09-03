@@ -5,7 +5,7 @@ CPPFLAGS=-g -std=c++11
 LDFLAGS=-g
 LDLIBS=
 
-BUILD_DIR=.
+BUILD_DIR=build/
 SRCS=src/net.cpp \
 src/matrix.cpp \
 test/main.cpp

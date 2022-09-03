@@ -1,4 +1,6 @@
-#include "net.h"
+#include "net.hpp"
+#include <iostream>
+#include <ostream>
 #include <vector>
 #include <cassert>
 
@@ -74,12 +76,7 @@ Matrix Net::run(Matrix &input){
     return layers.back();
 }
 
-// Implementation based on this: 
-// https://en.wikipedia.org/wiki/Backpropagation
-//
-// Variable conventions follow that, so reference wikipedia for definitions
-// Maybe want to split this up into separate functions at some point
-void Net::backpropogate(Matrix &input, Matrix &output, float lr){
+std::vector<Matrix> Net::Gradient(Matrix &input, Matrix &output){
     std::vector<Matrix> a;
     std::vector<Matrix> f_prime;
     
@@ -112,12 +109,30 @@ void Net::backpropogate(Matrix &input, Matrix &output, float lr){
         // have one less element than a
         grad_w_C[l-1] = delta[l-1] * a[l-1].transpose();
     }
+    return grad_w_C;
+}
 
-    // Update weights using gradient descent
-    for(i = 0; i < weights.size(); ++i){
-        weights[i] = weights[i] + grad_w_C[i] * (-lr);
+// Implementation based on this: 
+// https://en.wikipedia.org/wiki/Backpropagation
+// https://en.wikipedia.org/wiki/Stochastic_gradient_descent
+// Variable conventions follow that, so reference wikipedia for definitions
+void Net::backpropogate(std::vector<Matrix>& input, std::vector<Matrix>& output, float lr){
+    std::vector<std::vector<Matrix>> grads;
+    for(int i = 0; i < input.size(); ++i){
+        grads.push_back(Gradient(input[i], output[i]));
     }
-
+    // Calculate average of all gradients
+    // Sloppy without a copy constructor but whatever
+    std::vector<Matrix> grad = grads[0];
+    for(auto g : grads){
+        for(int i = 0; i < weights.size(); ++i){
+            grad[i] = grad[i] + g[i];
+        }
+    }
+    for(int i = 0; i < weights.size(); ++i){
+        grad[i] = grad[i] * (1.0/grads.size());
+        weights[i] = weights[i] + grad[i] * (-lr);
+    }
 }
 
 
