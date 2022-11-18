@@ -52,6 +52,8 @@ Net::Net(std::vector<int> layer_sizes){
     // Can make this a parameter or something later
     act = relu;
     act_d = relu_d;
+    /* act = linear; */
+    /* act_d = linear_d; */
     // Make sum of squares default cost function
     cost = sum_of_squares;
     cost_d = sum_of_squares_d;
@@ -101,6 +103,8 @@ std::vector<Matrix> Net::Gradient(Matrix &input, Matrix &output){
     // Hammard product
     delta.back() = f_prime.back() % grad_a_C;
     grad_w_C.back() = delta.back() * a[num_layers-2].transpose();
+    grad_w_C.back().print();
+    std::cout << std::endl;
     // This is quite confusing since wikipedia is 1 indexed and c++ is 0
     // indexed
     for(int l = num_layers-2; l > 0; --l){
@@ -108,6 +112,8 @@ std::vector<Matrix> Net::Gradient(Matrix &input, Matrix &output){
         // This looks different than wikipedia because grad_w_C and delta
         // have one less element than a
         grad_w_C[l-1] = delta[l-1] * a[l-1].transpose();
+        grad_w_C[l-1].print();
+        std::cout << std::endl;
     }
     return grad_w_C;
 }
@@ -119,19 +125,25 @@ std::vector<Matrix> Net::Gradient(Matrix &input, Matrix &output){
 void Net::backpropogate(std::vector<Matrix>& input, std::vector<Matrix>& output, float lr){
     std::vector<std::vector<Matrix>> grads;
     for(int i = 0; i < input.size(); ++i){
+        std::cout << "grads " << i << ":\n";
         grads.push_back(Gradient(input[i], output[i]));
     }
     // Calculate average of all gradients
     // Sloppy without a copy constructor but whatever
     std::vector<Matrix> grad = grads[0];
     for(auto g : grads){
-        for(int i = 0; i < weights.size(); ++i){
+        for(int i = 0; i < g.size(); ++i){
             grad[i] = grad[i] + g[i];
         }
     }
     for(int i = 0; i < weights.size(); ++i){
         grad[i] = grad[i] * (1.0/grads.size());
+        std::cout << "grad:\n";
+        grad[i].print();
         weights[i] = weights[i] + grad[i] * (-lr);
+        std::cout << "weights:\n";
+        weights[i].print();
+
     }
 }
 
