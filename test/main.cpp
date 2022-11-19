@@ -83,20 +83,23 @@ void testNetRun(){
 void testIdentity(){
     std::vector<int> layer_len = {2, 2};
     Net net(layer_len);
+    Matrix M = Matrix((V){{1, 0}, {0, 1}});
 
 
     std::vector<Matrix> inputs;
+    std::vector<Matrix> outputs;
     for(int i = 0; i < 10; ++i){
         Matrix input(2);
         input[i%2][0] = 1;
         inputs.push_back(input);
         std::cout << "input number " << i << std::endl;
         inputs.back().print();
+        outputs.push_back(M * input);
     }
 
-    float lr = 1;
+    float lr = 2;
     for(int i = 0; i < 10; ++i){
-        net.backpropogate(inputs, inputs, lr);
+        net.backpropogate(inputs, outputs, lr);
         lr = lr/(1+0.1*i);
     }
 
@@ -141,7 +144,7 @@ void testTransitionMatrix(){
         outputs.back().print();
     }
 
-    float lr = 0.01;
+    float lr = 0.1;
     for(int i = 0; i < 5; ++i){
         net.backpropogate(inputs, outputs, lr);
         lr = lr/(1+0.1*i);

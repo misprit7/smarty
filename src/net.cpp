@@ -29,7 +29,7 @@ static float sum_of_squares(Matrix &y1, Matrix &y2){
     for(int i = 0; i < y1.rows; ++i){
         sum += (y1[i][0] - y2[i][0]) * (y1[i][0] - y2[i][0]);
     }
-    return sum;
+    return sum / 2.0;
 }
 
 static Matrix sum_of_squares_d(Matrix &y1, Matrix &y2){
@@ -40,7 +40,7 @@ static Matrix sum_of_squares_d(Matrix &y1, Matrix &y2){
 
     for(int i = 0; i < y1.rows; ++i){
         // d/dx (x-a)^2 = 2(x-a)
-        ret[i][0] = 2 * (y1[i][0] - y2[i][0]);
+        ret[i][0] = (y1[i][0] - y2[i][0]);
     }
     return ret;
 }
@@ -50,10 +50,10 @@ Net::Net(std::vector<int> layer_sizes){
     layer_len = layer_sizes;
     // Default to relu for now
     // Can make this a parameter or something later
-    act = relu;
-    act_d = relu_d;
-    /* act = linear; */
-    /* act_d = linear_d; */
+    /* act = relu; */
+    /* act_d = relu_d; */
+    act = linear;
+    act_d = linear_d;
     // Make sum of squares default cost function
     cost = sum_of_squares;
     cost_d = sum_of_squares_d;
@@ -79,8 +79,8 @@ Matrix Net::run(Matrix &input){
 }
 
 std::vector<Matrix> Net::Gradient(Matrix &input, Matrix &output){
-    std::vector<Matrix> a;
-    std::vector<Matrix> f_prime;
+    std::vector<Matrix> a; // Length: num_layers
+    std::vector<Matrix> f_prime; // Length: num_layers - 1
     
     // Run through net forward to calculate intermediate parameters
     a.push_back(input);
