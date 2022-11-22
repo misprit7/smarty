@@ -78,6 +78,7 @@ Matrix Net::run(Matrix &input){
     return layers.back();
 }
 
+#if 0
 std::vector<Matrix> Net::Gradient(Matrix &input, Matrix &output){
     std::vector<Matrix> a; // Length: num_layers
     std::vector<Matrix> f_prime; // Length: num_layers - 1
@@ -116,6 +117,36 @@ std::vector<Matrix> Net::Gradient(Matrix &input, Matrix &output){
         std::cout << std::endl;
     }
     return grad_w_C;
+}
+#endif
+
+std::vector<Matrix> Net::Gradient(Matrix &input, Matrix &output){
+    if(num_layers <= 2) return {};
+    std::vector<Matrix> a;
+    std::vector<Matrix> o;
+    std::vector<Matrix> g_prime;
+    std::vector<Matrix> delta(num_layers-1);
+    std::vector<Matrix> gradients(num_layers-1);
+    
+    // Run through net forward to calculate intermediate parameters
+    a.push_back(input);
+    o.push_back(input);
+    int i = 0;
+    while(a.size() < num_layers){
+        a.push_back(weights[i++] * o.back());
+        g_prime.push_back(a.back().apply(act_d));
+        o.back() = a.back().apply(act);
+    }
+
+    int k = num_layers-2;
+    delta[k] = g_prime[k] % cost_d(a.back(), output);
+    gradients[k] = o[k] * delta[k].transpose();
+
+    for(--k; k >= 0; --k){
+        delta[k] = g_prime[k] % (weights[k+1] * delta[k+1]);
+        gradients[k] = o[k] * delta[k].transpose();
+    }
+    return gradients;
 }
 
 // Implementation based on this: 
